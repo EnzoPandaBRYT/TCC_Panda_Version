@@ -52,7 +52,8 @@ script = ExtResource("1_whftq")
 sprite_frames = SubResource("SpriteFrames_6kodb")
 animation = &"clock"
 autoplay = "clock"
-frame_progress = 0.136213
+frame = 2
+frame_progress = 0.384898
 
 [node name="playerDetection" type="Area2D" parent="."]
 
