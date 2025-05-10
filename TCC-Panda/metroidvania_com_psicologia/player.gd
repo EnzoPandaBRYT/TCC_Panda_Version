@@ -101,7 +101,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func slow_motion(duration: float = 1.5):
-	print("Time Warp começou agora fazendo alteraçãoes")
+	print("Time Warp")
 	Engine.time_scale = factor # Determina a escala de tempo da Engine, isso inclui TODOS os nós
 	await get_tree().create_timer(duration, false, false, true).timeout # Cria um timer assíncrono que não será processado sempre, afetado por Física, e nem pelo Time Factor do jogo
 	print("Time Warp Acabou")

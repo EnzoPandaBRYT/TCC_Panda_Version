@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://yxkhoomjkg5y"]
+[gd_scene load_steps=4 format=3 uid="uid://dsjvp2jcex54l"]
 
-[ext_resource type="Texture2D" uid="uid://cvmenx5x7cf6m" path="res://items/double_jump.png" id="1_o36hd"]
-[ext_resource type="Script" uid="uid://cnr28vqgfxe6q" path="res://items/double_jump.gd" id="1_pjepq"]
+[ext_resource type="Texture2D" uid="uid://cvmenx5x7cf6m" path="res://items/double_jump/double_jump.png" id="1_o36hd"]
+[ext_resource type="Script" uid="uid://cnr28vqgfxe6q" path="res://items/double_jump/double_jump.gd" id="1_pjepq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e4eog"]
 radius = 7.07107
