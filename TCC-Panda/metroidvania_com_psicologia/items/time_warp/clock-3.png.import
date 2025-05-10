@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvmenx5x7cf6m"
-path="res://.godot/imported/double_jump.png-b6bb4576cb342f4fc7992d58cef80da0.ctex"
+uid="uid://mor5rfhqmkg3"
+path="res://.godot/imported/clock-3.png-ac55f444e2749f22d200913f1b5aa008.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://items/double_jump.png"
-dest_files=["res://.godot/imported/double_jump.png-b6bb4576cb342f4fc7992d58cef80da0.ctex"]
+source_file="res://items/time_warp/clock-3.png"
+dest_files=["res://.godot/imported/clock-3.png-ac55f444e2749f22d200913f1b5aa008.ctex"]
 
 [params]
 

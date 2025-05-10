@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=4 uid="uid://co8e3r47x3lmq"]
+[gd_scene load_steps=10 format=4 uid="uid://co8e3r47x3lmq"]
 
 [ext_resource type="Texture2D" uid="uid://bllm7pssgvr1t" path="res://levels/tile/tileset-PLACE-HOLDER.png" id="1_8nelv"]
 [ext_resource type="Texture2D" uid="uid://di7repnlatj4v" path="res://levels/tile/background-PLACE-HOLDER.png" id="1_aeujl"]
 [ext_resource type="PackedScene" uid="uid://bnel1u2etfiwm" path="res://player/player.tscn" id="2_cd0bw"]
-[ext_resource type="PackedScene" uid="uid://yxkhoomjkg5y" path="res://items/double_jump.tscn" id="4_4l2q7"]
+[ext_resource type="PackedScene" uid="uid://dsjvp2jcex54l" path="res://items/double_jump/double_jump.tscn" id="4_4l2q7"]
+[ext_resource type="PackedScene" uid="uid://msq8my3k82h6" path="res://items/time_warp/time_changer.tscn" id="5_o6mel"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tlucr"]
 texture = ExtResource("1_aeujl")
@@ -48,3 +49,7 @@ z_index = 5
 [node name="doubleJump" parent="." instance=ExtResource("4_4l2q7")]
 top_level = true
 position = Vector2(199, 6)
+
+[node name="time_changer" parent="." instance=ExtResource("5_o6mel")]
+top_level = true
+position = Vector2(568, -123)
