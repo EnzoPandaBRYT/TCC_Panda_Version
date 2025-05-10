@@ -1,0 +1,3 @@
+v0.1:
+- Base, mecânicas básicas alteradas para abrangerem todas as teclas (W,A,S,D e Setas)
+- Teste do Double Jump: Pressione "J" no teclado.

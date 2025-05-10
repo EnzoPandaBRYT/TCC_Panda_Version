@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://bnel1u2etfiwm"]
+
+[ext_resource type="Script" uid="uid://c5s2gioqb4kv7" path="res://player.gd" id="1_rpygr"]
+[ext_resource type="Texture2D" uid="uid://brydwky6scu4d" path="res://player/img/idle.png" id="2_i8nq8"]
+[ext_resource type="Texture2D" uid="uid://cpaisen6jyv8h" path="res://player/img/direita-move.png" id="3_i2ta3"]
+[ext_resource type="Texture2D" uid="uid://cf450cvhsq6ud" path="res://player/img/para cima.png" id="3_k4r84"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lbo0b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_i8nq8")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_k4r84")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_i2ta3")
+}],
+"loop": true,
+"name": &"moving",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4fq35"]
+size = Vector2(16, 16)
+
+[node name="player" type="CharacterBody2D"]
+script = ExtResource("1_rpygr")
+
+[node name="anim" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_lbo0b")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="collisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_4fq35")
+
+[node name="camera2D" type="Camera2D" parent="."]
+zoom = Vector2(3, 3)
