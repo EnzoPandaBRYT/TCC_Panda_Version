@@ -48,7 +48,7 @@ z_index = 5
 
 [node name="doubleJump" parent="." instance=ExtResource("4_4l2q7")]
 top_level = true
-position = Vector2(199, 6)
+position = Vector2(1512, -136)
 
 [node name="time_changer" parent="." instance=ExtResource("5_o6mel")]
 top_level = true
