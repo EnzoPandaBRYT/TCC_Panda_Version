@@ -1,3 +1,11 @@
-v0.1:
-- Base, mecânicas básicas alteradas para abrangerem todas as teclas (W,A,S,D e Setas)
-- Teste do Double Jump: Pressione "J" no teclado.
+v0.1.5:
+- Dash (Avanço de Luz) adicionado (Pressione "K" ou "B" ou "º") para ATIVAR;
+- A habilidade Avanço de Luz mantém o personagem parado até completar a ação;
+- Stomp - Tear Down ou Lágrimas Descendentes viraram uma habilidade e,
+posteriormente, um coletável;
+- Compatibilidade com controles (Apenas Xbox testado até agora);
+- Valores de velocidade do personagem e habilidades foram equilibrados;
+- Suavidade adicionada à câmera;
+- Erros de otimização corrigidos;
+- Botão DEV_TOOL (Pressione "Home" no teclado ou RIGHT JOYSTICK) adicionado: Libera todas as habilidades do jogo.
+- Botão DOWNDOWN (Pressione "Ponto ou Period" no teclado ou DOWN D-PAD) adicionado: Permite com que você teste se variáveis estão sendo alteradas > Basta adicionar dentro da função e pronto.
