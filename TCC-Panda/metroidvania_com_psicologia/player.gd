@@ -9,57 +9,45 @@ extends CharacterBody2D
 # Isso evita com que a animação não seja carregada
 @onready var anim: AnimatedSprite2D = $anim
 
-# Velocidade CONSTANTE do jogador
 var speed := 150.0
 
-# Velocidade do Pulo do Jogador
 const jump_speed = -300.0
 
 # Estabelece o número máximo de Pulos Máximos do jogador
 # De início, o número de pulos máximos é 1
 var maxJumps = 1
 
-# Pulo Duplo:
 var doubleJump := false
 
-# Verifica Stomp
 var isStomping := false
 
-# Verifica Pulo
 var isJumping := false
 
-# Verifica DASH
 var isDashing := false
 
-# Determina se o jogador possuí as LÁGRIMAS DESCENDENTES
-var tearDown := false
-
-# Determina se o jogador possuí as VIAGEM DE LUZ
+# Verifica se o jogador possui os poderes abaixo:
 var dash := false
 
-# Determina se o jogador possuí o controle do FLUXO TEMPORAL
+var tearDown := false
+
 var timeWarp := false
 
-# Fator padrão de tempo (Metade do tempo)
-var factor = 0.5
+var timeFactor = 0.5 # Fator padrão de tempo (Metade do tempo)
 
-# Verifica se o FLUXO TEMPORAL foi alterado ou não
 var timeWarpActivated = false
 
-# Recarrega a habilidade do TIME WARP
-# Inicialmente verdadeira, deverá esperar a recarga inicial primeiro
+# Recarga das Habilidades:
 var twReloading = false
 
-# Recarrega a habilidade do TIME WARP
-# Inicialmente verdadeira, deverá esperar a recarga inicial primeiro
 var dashReloading = false
 
-# Velocidade do DASH
-var dashSpeed := 450.0
+var stompReloading = false
 
-# Duração do DASH
-var dashDuration := 0.5
+var dashSpeed := 450.0 # Velocidade do DASH
 
+var dashDuration := 0.5 # Duração do DASH
+
+# Verifica se o jogador está totalmente parado
 var idle = false
 
 # Processo executado a CADA FRAME possível do jogo
@@ -68,10 +56,9 @@ func _physics_process(delta: float) -> void:
 	# Adiciona a gravidade - Padrão: 980.0 px/s
 	if not is_on_floor() and not isDashing:
 		velocity += get_gravity() * delta # Velocidade de gravidade do projeto (Padrão) * Frames possíveis
-		anim.play("jump") # Personagem Pulando
 
 	if not is_on_floor() and isDashing:
-		velocity.y = 0 # Velocidade de gravidade do projeto (Padrão) * Frames possíveis
+		velocity.y = 0 # Zera a velocidade Y do jogador
 	
 	if is_on_floor():
 		velocity.y = 0
@@ -82,14 +69,11 @@ func _physics_process(delta: float) -> void:
 		maxJumps = 2 # Pulos máximos = 2 (Apenas para verificação)
 	
 	# Tecla L pressionada ativa o Time Warp
-	# Impossível ativar múltiplas vezes
-	# TODO: Cooldown entre as ativações
-	if Input.is_action_just_pressed("time_warp") and timeWarp == true and twReloading == false and timeWarpActivated == false:
+	if Input.is_action_just_pressed("time_warp") and timeWarp and !twReloading and !timeWarpActivated:
 		await slow_motion()
-		
+	
 	# Verifica a tecla de pulo
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		print(maxJumps)
 		isJumping = true # Atualiza o verificador de pulo
 		velocity.y = jump_speed # Utiliza velocidade para não "teleportar" o jogador para cima
 	
@@ -100,13 +84,14 @@ func _physics_process(delta: float) -> void:
 		maxJumps = 0 # Zera o contador de pulos máximos para garantir que o jogador não irá sair voando
 	
 	# Detecta a ação de STOMPAR
-	if Input.is_action_pressed("crouch") and Input.is_action_just_pressed("use_power") and tearDown and not isDashing and not is_on_floor():
+	if Input.is_action_pressed("crouch") and Input.is_action_just_pressed("use_power") and tearDown and !isDashing and !is_on_floor() and !stompReloading:
 		velocity += get_gravity() * 0.75 # Ação de descer mais rápido, diminui o efeito da gravidade para melhores efeitos
 		isStomping = true
+		stompReloading = true
+		$stompCooldown.start()
 		
 	# Detecta a ação de DASH
-	if (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")) and Input.is_action_just_pressed("use_power") and dash and not dashReloading:
-		print(dashReloading)
+	if (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")) and Input.is_action_just_pressed("use_power") and dash and not dashReloading and not isStomping:
 		isDashing = true
 		dashReloading = true
 		$dashTimer.start() # Duração do DASH: 0.25 segundos
@@ -117,6 +102,7 @@ func _physics_process(delta: float) -> void:
 		
 	if Input.is_action_just_pressed("downdown"):
 		downdown()
+
 	dev_tool()
 	player_movement()
 	move_and_slide()
@@ -126,15 +112,17 @@ func player_movement():
 	var direction := Input.get_axis("move_left", "move_right")
 	if isDashing:
 		return
-	elif direction and isStomping == false and timeWarpActivated == false:
+	
+	elif direction and !isStomping:
+		if !timeWarpActivated:
+			idle = false
+			velocity.x = direction * speed
+		else:
+			idle = false
+			velocity.x = direction * speed * 2
+	
+	elif velocity.y != 0:
 		idle = false
-		velocity.x = direction * speed
-	elif direction and isStomping == false and timeWarpActivated == true:
-		idle = false
-		velocity.x = direction * speed * 2
-	elif direction and isStomping == false:
-		idle = false
-		velocity.x = direction * dashSpeed
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
 		idle = true
@@ -157,14 +145,15 @@ func player_movement():
 			elif direction < 0:
 				anim.flip_h = true # Olhando para a esquerda
 				anim.play("running") # Toca a animação de Correr, porém espelhada
-		
+			
 		elif isJumping and not isDashing:
 			if direction > 0:
 				anim.flip_h = false # Olhando para a direita
 			elif direction < 0:
 				anim.flip_h = true # Olhando para a esquerda
+			
 			anim.play("jump") # Personagem Pulando
-		
+			
 		else:
 			if direction > 0:
 				anim.flip_h = false # Olhando para a direita
@@ -173,14 +162,16 @@ func player_movement():
 				anim.flip_h = true # Olhando para a esquerda
 				anim.play("dash_midair") # Personagem Dashando
 			
-	else:
+	elif idle and not isJumping:
 		anim.play("idle") # Caso nenhuma das animações acima seja executada, entrará em estado "inerte"
+	
+	
 
-func slow_motion(duration: float = 2):
+func slow_motion(duration: float = 5):
 	timeWarpActivated = true
 	print("Time Warp")
-	Engine.time_scale = factor # Determina a escala de tempo da Engine, isso inclui TODOS os nós
-	await get_tree().create_timer(duration, false, false, true).timeout # Cria um timer assíncrono que não será processado sempre, afetado por Física, e nem pelo Time Factor do jogo, respectivamente
+	Engine.time_scale = timeFactor # Determina a escala de tempo da Engine, isso inclui TODOS os nós
+	await get_tree().create_timer(duration/2, false, false, true).timeout # Cria um timer assíncrono que não será processado sempre, afetado por Física, e nem pelo Time Factor do jogo, respectivamente
 	print("Time Warp Acabou")
 	timeWarpActivated = false
 	twReloading = true
@@ -188,7 +179,7 @@ func slow_motion(duration: float = 2):
 	
 	if twReloading == true:
 		print("Recarregando...")
-		await get_tree().create_timer(duration * 1.5, false, false, true).timeout
+		await get_tree().create_timer(1, false, false, true).timeout
 		twReloading = false
 		print("Recarregado!")
 		
@@ -211,10 +202,15 @@ func dev_tool():
 		
 func downdown():
 	print("Testando o DOWNDOWN...")
+	print("Pulando?: " + str(idle))
 
 
 func _on_dash_timer_timeout() -> void:
 	isDashing = false # Replace with function body.
+	velocity.x = 0
 
 func _on_dash_cooldown_timeout() -> void:
 	dashReloading = false # Replace with function body.
+
+func _on_stomp_cooldown_timeout() -> void:
+	stompReloading = false # Replace with function body.
