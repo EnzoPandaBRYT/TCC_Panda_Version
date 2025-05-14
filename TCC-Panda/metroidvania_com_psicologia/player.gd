@@ -13,6 +13,7 @@ var speed := 150.0
 
 const jump_speed = -300.0
 
+const jump_cutoff = 0.5
 # Estabelece o número máximo de Pulos Máximos do jogador
 # De início, o número de pulos máximos é 1
 var maxJumps = 1
@@ -26,7 +27,7 @@ var isJumping := false
 var isDashing := false
 
 # Verifica se o jogador possui os poderes abaixo:
-var dash := false
+var dash = false
 
 var tearDown := false
 
@@ -65,23 +66,29 @@ func _physics_process(delta: float) -> void:
 		isJumping = false
 		isStomping = false
 	
+	if is_on_wall():
+		anim.play("idle")
+	
 	if is_on_floor() and doubleJump == true:
 		maxJumps = 2 # Pulos máximos = 2 (Apenas para verificação)
 	
 	# Tecla L pressionada ativa o Time Warp
 	if Input.is_action_just_pressed("time_warp") and timeWarp and !twReloading and !timeWarpActivated:
 		await slow_motion()
-	
+
 	# Verifica a tecla de pulo
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_pressed("jump") and is_on_floor():
 		isJumping = true # Atualiza o verificador de pulo
 		velocity.y = jump_speed # Utiliza velocidade para não "teleportar" o jogador para cima
-	
+
 	# Permite o Pulo Duplo, se liberado
 	if Input.is_action_just_pressed("jump") and not is_on_floor() and not isDashing and maxJumps > 1:
 		isJumping = true
 		velocity.y = jump_speed * 0.9 # Indica que o segundo pulo será menor
 		maxJumps = 0 # Zera o contador de pulos máximos para garantir que o jogador não irá sair voando
+
+	if Input.is_action_just_released("jump") and velocity.y < 0:
+		velocity.y *= jump_cutoff  # Reduz a velocidade do pulo
 	
 	# Detecta a ação de STOMPAR
 	if Input.is_action_pressed("crouch") and Input.is_action_just_pressed("use_power") and tearDown and !isDashing and !is_on_floor() and !stompReloading:
@@ -110,7 +117,7 @@ func _physics_process(delta: float) -> void:
 func player_movement():
 	# Pega o INPUT da direção do jogador e com isso, o movimenta pelo cenário
 	var direction := Input.get_axis("move_left", "move_right")
-	if isDashing:
+	if isDashing or isStomping:
 		return
 	
 	elif direction and !isStomping:
@@ -165,7 +172,7 @@ func player_movement():
 	elif idle and not isJumping:
 		anim.play("idle") # Caso nenhuma das animações acima seja executada, entrará em estado "inerte"
 	
-	
+	anim.speed_scale = direction * 1.5
 
 func slow_motion(duration: float = 5):
 	timeWarpActivated = true
@@ -182,9 +189,6 @@ func slow_motion(duration: float = 5):
 		await get_tree().create_timer(1, false, false, true).timeout
 		twReloading = false
 		print("Recarregado!")
-		
-func power_dash(dashDuration: float = 0.5):
-	pass
 
 func dev_tool():
 	# DEV_TOOL = HOME no teclado; Libera todo tipo de mecânica possível
