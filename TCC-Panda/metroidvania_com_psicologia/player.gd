@@ -12,59 +12,61 @@ extends CharacterBody2D
 var speed := 150.0
 
 const jump_speed = -300.0
-
 const jump_cutoff = 0.5
+
 # Estabelece o número máximo de Pulos Máximos do jogador
 # De início, o número de pulos máximos é 1
-var maxJumps = 1
-
-var doubleJump := false
+var maxJumps := 1
 
 var isStomping := false
-
 var isJumping := false
-
 var isDashing := false
 
 # Verifica se o jogador possui os poderes abaixo:
-var dash = false
-
+var dash := false
+var doubleJump := false
 var tearDown := false
-
+## Time Warp
 var timeWarp := false
 
-var timeFactor = 0.5 # Fator padrão de tempo (Metade do tempo)
+var timeFactor := 0.5 # Fator padrão de tempo (Metade do tempo)
+var timeWarpActivated := false
 
-var timeWarpActivated = false
+## Recarga das Habilidades:
+var twReloading := false
+var dashReloading := false
+var stompReloading := false
 
-# Recarga das Habilidades:
-var twReloading = false
-
-var dashReloading = false
-
-var stompReloading = false
+# Delay antes do Stomp e Carga do mesmo:
+var preStomp := false
+var stompCharge := 0.0
 
 var dashSpeed := 450.0 # Velocidade do DASH
-
 var dashDuration := 0.5 # Duração do DASH
 
 # Verifica se o jogador está totalmente parado
-var idle = false
+var idle := false
 
 # Processo executado a CADA FRAME possível do jogo
 func _physics_process(delta: float) -> void:
 	
 	# Adiciona a gravidade - Padrão: 980.0 px/s
-	if not is_on_floor() and not isDashing:
+	if not is_on_floor() and not isDashing and not preStomp:
 		velocity += get_gravity() * delta # Velocidade de gravidade do projeto (Padrão) * Frames possíveis
-
-	if not is_on_floor() and isDashing:
+	
+	if not is_on_floor() and isDashing or preStomp:
 		velocity.y = 0 # Zera a velocidade Y do jogador
+		
+	if preStomp:
+		velocity.x = 0
+	elif !preStomp and isStomping:
+		velocity.y += 250 * stompCharge/10
 	
 	if is_on_floor():
 		velocity.y = 0
 		isJumping = false
 		isStomping = false
+		stompCharge = 0
 	
 	if is_on_wall():
 		anim.play("idle")
@@ -91,18 +93,24 @@ func _physics_process(delta: float) -> void:
 		velocity.y *= jump_cutoff  # Reduz a velocidade do pulo
 	
 	# Detecta a ação de STOMPAR
-	if Input.is_action_pressed("crouch") and Input.is_action_just_pressed("use_power") and tearDown and !isDashing and !is_on_floor() and !stompReloading:
-		velocity += get_gravity() * 0.75 # Ação de descer mais rápido, diminui o efeito da gravidade para melhores efeitos
+	if Input.is_action_pressed("crouch") and Input.is_action_pressed("use_power") and tearDown and !isDashing and !is_on_floor() and !stompReloading:
+		if stompCharge <= 5.0:
+			stompCharge += 0.1
+		preStomp = true
+		print(stompCharge)
+	if (Input.is_action_just_released("use_power") or stompCharge >= 5.0) and preStomp:
 		isStomping = true
 		stompReloading = true
-		$stompCooldown.start()
+		preStomp = false
+		print("tometomeome")
+		$timers/stompCooldown.start()
 		
 	# Detecta a ação de DASH
 	if (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")) and Input.is_action_just_pressed("use_power") and dash and not dashReloading and not isStomping:
 		isDashing = true
 		dashReloading = true
-		$dashTimer.start() # Duração do DASH: 0.25 segundos
-		$dashCooldown.start() # Recarga de 2 segundos
+		$timers/dashTimer.start() # Duração do DASH: 0.25 segundos
+		$timers/dashCooldown.start() # Recarga de 2 segundos
 		
 		var direction = Input.get_axis("move_left", "move_right")
 		velocity.x = direction * dashSpeed
@@ -117,7 +125,7 @@ func _physics_process(delta: float) -> void:
 func player_movement():
 	# Pega o INPUT da direção do jogador e com isso, o movimenta pelo cenário
 	var direction := Input.get_axis("move_left", "move_right")
-	if isDashing or isStomping:
+	if isDashing or preStomp or isStomping:
 		return
 	
 	elif direction and !isStomping:
@@ -206,7 +214,9 @@ func dev_tool():
 		
 func downdown():
 	print("Testando o DOWNDOWN...")
-	print("Pulando?: " + str(idle))
+	print("PreStomp: " + str(preStomp))
+	print("isStomping: " + str(isStomping))
+	print("Stomp Charge: " + str(stompCharge))
 
 
 func _on_dash_timer_timeout() -> void:
