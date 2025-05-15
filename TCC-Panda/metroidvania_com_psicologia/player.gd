@@ -47,6 +47,9 @@ var dashDuration := 0.5 # Duração do DASH
 # Verifica se o jogador está totalmente parado
 var idle := false
 
+func _ready() -> void:
+	anim.play("idle")
+
 # Processo executado a CADA FRAME possível do jogo
 func _physics_process(delta: float) -> void:
 	
@@ -60,7 +63,7 @@ func _physics_process(delta: float) -> void:
 	if preStomp:
 		velocity.x = 0
 	elif !preStomp and isStomping:
-		velocity.y += 250 * stompCharge/10
+		velocity.y += 300 * stompCharge/10
 	
 	if is_on_floor():
 		velocity.y = 0
@@ -68,8 +71,7 @@ func _physics_process(delta: float) -> void:
 		isStomping = false
 		stompCharge = 0
 	
-	if is_on_wall():
-		anim.play("idle")
+
 	
 	if is_on_floor() and doubleJump == true:
 		maxJumps = 2 # Pulos máximos = 2 (Apenas para verificação)
@@ -117,7 +119,7 @@ func _physics_process(delta: float) -> void:
 		
 	if Input.is_action_just_pressed("downdown"):
 		downdown()
-
+	print(anim.animation, " | playing: ", anim.is_playing())
 	dev_tool()
 	player_movement()
 	move_and_slide()
@@ -176,9 +178,7 @@ func player_movement():
 			elif direction < 0:
 				anim.flip_h = true # Olhando para a esquerda
 				anim.play("dash_midair") # Personagem Dashando
-			
-	elif idle and not isJumping:
-		anim.play("idle") # Caso nenhuma das animações acima seja executada, entrará em estado "inerte"
+
 	
 	anim.speed_scale = direction * 1.5
 
