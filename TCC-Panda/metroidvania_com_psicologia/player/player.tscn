@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://c5s2gioqb4kv7" path="res://player.gd" id="1_rpygr"]
 [ext_resource type="Texture2D" uid="uid://vcr7c1tfpq2u" path="res://assets/player/dash-mid-air.png" id="2_g6k8r"]
-[ext_resource type="Texture2D" uid="uid://bw853slw7x0ot" path="res://assets/player/Idle (32 x 32) (Fire).png" id="3_g6k8r"]
+[ext_resource type="Texture2D" uid="uid://cpqh8hbjmvhvd" path="res://assets/player/Idle (32 x 32) (Fire).png" id="3_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://dpq12rhml02sg" path="res://assets/player/Jumping (32 x 32).png" id="3_qjkh3"]
-[ext_resource type="Texture2D" uid="uid://qq7xkx05hxeg" path="res://assets/player/Walking (32 x 32).png" id="5_g6k8r"]
+[ext_resource type="Texture2D" uid="uid://1u0o0vlxb86y" path="res://assets/player/Walking (32 x 32) (Fire).png" id="5_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://dgqu27uu5dlhv" path="res://assets/player/Warping 2 (32 x 32).png" id="5_qjkh3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_32hag"]
@@ -144,8 +144,9 @@ script = ExtResource("1_rpygr")
 position = Vector2(5.68434e-14, -7)
 scale = Vector2(0.875, 0.875)
 sprite_frames = SubResource("SpriteFrames_lbo0b")
-animation = &"idle"
+animation = &"moving"
 autoplay = "idle"
+frame_progress = 0.854376
 
 [node name="collisionShape" type="CollisionShape2D" parent="."]
 visible = false
