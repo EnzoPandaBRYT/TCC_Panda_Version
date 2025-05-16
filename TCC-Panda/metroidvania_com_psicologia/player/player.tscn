@@ -1,11 +1,44 @@
-[gd_scene load_steps=26 format=3 uid="uid://bnel1u2etfiwm"]
+[gd_scene load_steps=35 format=3 uid="uid://bnel1u2etfiwm"]
 
 [ext_resource type="Script" uid="uid://c5s2gioqb4kv7" path="res://player.gd" id="1_rpygr"]
+[ext_resource type="Texture2D" uid="uid://bp2ai4wq671ck" path="res://assets/player/Charging Stomp (32 x 32) (Fire).png" id="2_boad6"]
 [ext_resource type="Texture2D" uid="uid://vcr7c1tfpq2u" path="res://assets/player/dash-mid-air.png" id="2_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://cpqh8hbjmvhvd" path="res://assets/player/Idle (32 x 32) (Fire).png" id="3_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://r3ddjwcy05k0" path="res://assets/player/Jumping (32 x 32) (Fire).png" id="4_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://1u0o0vlxb86y" path="res://assets/player/Walking (32 x 32) (Fire).png" id="5_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://dgqu27uu5dlhv" path="res://assets/player/Warping 2 (32 x 32).png" id="5_qjkh3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4c7l"]
+atlas = ExtResource("2_boad6")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_knn7v"]
+atlas = ExtResource("2_boad6")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7pqkx"]
+atlas = ExtResource("2_boad6")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uw77l"]
+atlas = ExtResource("2_boad6")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rptt4"]
+atlas = ExtResource("2_boad6")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r7pn3"]
+atlas = ExtResource("2_boad6")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b8hi5"]
+atlas = ExtResource("2_boad6")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2uvqg"]
+atlas = ExtResource("2_boad6")
+region = Rect2(224, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_32hag"]
 atlas = ExtResource("2_g6k8r")
@@ -77,6 +110,35 @@ region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lbo0b"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g4c7l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_knn7v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7pqkx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uw77l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rptt4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r7pn3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b8hi5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2uvqg")
+}],
+"loop": true,
+"name": &"charging_stomp",
+"speed": 24.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_32hag")
@@ -165,8 +227,9 @@ script = ExtResource("1_rpygr")
 position = Vector2(5.68434e-14, -7)
 scale = Vector2(0.875, 0.875)
 sprite_frames = SubResource("SpriteFrames_lbo0b")
-animation = &"idle"
-frame_progress = 0.293125
+animation = &"charging_stomp"
+frame = 6
+frame_progress = 0.0346982
 
 [node name="collisionShape" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_ebec5")

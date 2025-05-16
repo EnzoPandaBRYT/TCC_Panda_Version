@@ -47,9 +47,6 @@ var dashDuration := 0.5 # Duração do DASH
 # Verifica se o jogador está totalmente parado
 var idle := false
 
-func _ready() -> void:
-	anim.play("idle")
-
 # Processo executado a CADA FRAME possível do jogo
 func _physics_process(delta: float) -> void:
 	
@@ -59,7 +56,7 @@ func _physics_process(delta: float) -> void:
 	
 	if not is_on_floor() and isDashing or preStomp:
 		velocity.y = 0 # Zera a velocidade Y do jogador
-		
+	
 	if preStomp:
 		velocity.x = 0
 	elif !preStomp and isStomping:
@@ -71,7 +68,8 @@ func _physics_process(delta: float) -> void:
 		isStomping = false
 		stompCharge = 0
 	
-
+	if anim.animation != "idle" and velocity.x == 0 and !preStomp:
+		anim.play("idle")
 	
 	if is_on_floor() and doubleJump == true:
 		maxJumps = 2 # Pulos máximos = 2 (Apenas para verificação)
@@ -119,18 +117,17 @@ func _physics_process(delta: float) -> void:
 		
 	if Input.is_action_just_pressed("downdown"):
 		downdown()
-	print(anim.animation, " | playing: ", anim.is_playing())
 	dev_tool()
 	player_movement()
 	move_and_slide()
 
 func player_movement():
+	
+	
 	# Pega o INPUT da direção do jogador e com isso, o movimenta pelo cenário
 	var direction := Input.get_axis("move_left", "move_right")
-	if isDashing or preStomp or isStomping:
-		return
 	
-	elif direction and !isStomping:
+	if direction and !isStomping:
 		if !timeWarpActivated:
 			idle = false
 			velocity.x = direction * speed
@@ -147,6 +144,10 @@ func player_movement():
 
 	# Detecta movimentação para mudar o sprite
 	if not idle:
+		if preStomp:
+			anim.play("charging_stomp")
+			return
+		
 		if not timeWarpActivated and not isDashing and not isJumping:
 			if direction > 0:
 				anim.flip_h = false # Olhando para a direita
@@ -163,13 +164,16 @@ func player_movement():
 				anim.flip_h = true # Olhando para a esquerda
 				anim.play("running") # Toca a animação de Correr, porém espelhada
 			
-		elif isJumping and not isDashing:
+		elif isJumping and not isDashing and !(preStomp or isStomping):
 			if direction > 0:
 				anim.flip_h = false # Olhando para a direita
 			elif direction < 0:
 				anim.flip_h = true # Olhando para a esquerda
 			
 			anim.play("jump") # Personagem Pulando
+		
+		elif isJumping and (isStomping or preStomp):
+			anim.play("charging_stomp")
 			
 		else:
 			if direction > 0:
